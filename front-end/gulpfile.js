@@ -12,10 +12,10 @@ var sourcemaps = require('gulp-sourcemaps');
 var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
 
-gulp.task('default', ['copy-html', 'copy-images', 'styles', 'lint'], function() {
+gulp.task('default', ['copy-html', 'copy-images', 'styles', 'lint', 'scripts'], function() {
 	gulp.watch('sass/**/*.scss', ['styles']);
-	gulp.watch('js/**/*.js', ['lint']);
-	gulp.watch('/index.html', ['copy-html']);
+	gulp.watch('js/**/*.js', ['lint', 'scripts']);
+	gulp.watch('./**.html', ['copy-html']);
 	gulp.watch('./dist/index.html').on('change', browserSync.reload);
 
 	browserSync.init({
@@ -28,19 +28,16 @@ gulp.task('prod', ['copy-html', 'copy-images', 'styles', 'lint', 'scripts-dist']
 
 gulp.task('scripts', function() {
 	gulp.src('js/**/*.js')
-		.pipe(sourcemaps.init())
 		.pipe(babel())
-		.pipe(concat('all.js'))
-		.pipe(sourcemaps.write())
+		//.pipe(concat('scripts.js'))
 		.pipe(gulp.dest('dist/js'));
-
 });
 
 gulp.task('scripts-dist', function() {
 	gulp.src('js/**/*.js')
 		.pipe(sourcemaps.init())
 		.pipe(babel())
-		.pipe(concat('scripts.js'))
+		//.pipe(concat('scripts.js'))
 		.pipe(uglify())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist/js'));
@@ -55,7 +52,7 @@ gulp.task('lint', function() {
 });
 
 gulp.task('copy-html', function() {
-	gulp.src('./index.html')
+	gulp.src('./**.html')
 		.pipe(gulp.dest('./dist'));
 });
 

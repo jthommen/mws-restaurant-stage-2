@@ -54,9 +54,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
 	const address = document.getElementById('restaurant-address');
 	address.innerHTML = restaurant.address;
-
 	const image = document.getElementById('restaurant-img');
 	image.className = 'restaurant-img';
+	image.setAttribute('alt', `Restaurant ${restaurant.name}`);
 	image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
 	const cuisine = document.getElementById('restaurant-cuisine');
@@ -95,7 +95,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 	const container = document.getElementById('reviews-container');
-	const title = document.createElement('h2');
+	const title = document.createElement('h3');
 	title.innerHTML = 'Reviews';
 	container.appendChild(title);
 
@@ -105,35 +105,45 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 		container.appendChild(noReviews);
 		return;
 	}
-	const ul = document.getElementById('reviews-list');
+	const ListContainer = document.getElementById('reviews-list');
 	reviews.forEach(review => {
-		ul.appendChild(createReviewHTML(review));
+		ListContainer.appendChild(createReviewHTML(review));
 	});
-	container.appendChild(ul);
+	container.appendChild(ListContainer);
 };
 
 /**
  * Create review HTML and add it to the webpage.
  */
 createReviewHTML = (review) => {
-	const li = document.createElement('li');
-	const name = document.createElement('p');
+	const container = document.createElement('div');
+	const header = document.createElement('div');
+	const body = document.createElement('div');
+	const name = document.createElement('div');
+	container.setAttribute('class', 'review');
+	header.setAttribute('class', 'review-header');
+	body.setAttribute('class', 'review-body');
 	name.innerHTML = review.name;
-	li.appendChild(name);
+	name.setAttribute('class', 'reviewer-name');
+	container.appendChild(header);
+	container.appendChild(body);
+	header.appendChild(name);
 
-	const date = document.createElement('p');
+	const date = document.createElement('div');
 	date.innerHTML = review.date;
-	li.appendChild(date);
+	date.setAttribute('class', 'review-date');
+	header.appendChild(date);
 
-	const rating = document.createElement('p');
+	const rating = document.createElement('div');
 	rating.innerHTML = `Rating: ${review.rating}`;
-	li.appendChild(rating);
+	rating.setAttribute('class', 'review-rating');
+	body.appendChild(rating);
 
-	const comments = document.createElement('p');
+	const comments = document.createElement('div');
 	comments.innerHTML = review.comments;
-	li.appendChild(comments);
+	body.appendChild(comments);
 
-	return li;
+	return container;
 };
 
 /**
@@ -143,6 +153,7 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
 	const breadcrumb = document.getElementById('breadcrumb');
 	const li = document.createElement('li');
 	li.innerHTML = restaurant.name;
+	li.setAttribute('aria-current', 'page');
 	breadcrumb.appendChild(li);
 };
 
