@@ -1,11 +1,4 @@
-// ServiceWorker using IndexedDB
-
-importScripts('./js/idb.js');
-
-idb.open('restaurants', 1, (upgradeDB) => {
-	var keyValStore = upgradeDB.createObjectStore('keyval');
-	keyValStore.put('world', 'hello');
-});
+// ServiceWorker
 
 // Caching on install 
 self.addEventListener('install', (event) => {

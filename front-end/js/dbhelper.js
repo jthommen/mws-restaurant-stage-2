@@ -16,25 +16,58 @@ class DBHelper {
 			* Fetch all restaurants.
 			*/
 	static fetchRestaurants(callback) {
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', DBHelper.DATABASE_URL);
-		xhr.onload = () => {
-			if (xhr.status === 200) {
-				// Got a success response from server!
-				const restaurants = JSON.parse(xhr.responseText);
+
+		// Crating idb object store
+		var dbPromise = idb.open('restaurants', 2, (upgradeDB) => {
+			var restaurantStore = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'}); // Value, Key!
+		});
+
+		// Get restaurants from the store
+		dbPromise.then( (db) => {
+			var tx = db.transaction('restaurants');
+			var restaurantStore = tx.objectStore('restaurants');
+
+			return restaurantStore.getAll();
+		}).then( (restaurants) => {
+
+			if(restaurants.length > 0) {
+				console.log('Restaurants: ', restaurants);
 				callback(null, restaurants);
-			} else {
-				// Oops!. Got an error from server.
-				const error = `Request failed. Returned status of ${xhr.status}`;
-				callback(error, null);
 			}
-		};
-		xhr.send();
+			
+			let xhr = new XMLHttpRequest();
+			xhr.open('GET', DBHelper.DATABASE_URL);
+			xhr.onload = () => {
+				if (xhr.status === 200) {
+
+					// Got a success response from server!
+					const restaurants = JSON.parse(xhr.responseText);
+					callback(null, restaurants);
+					
+					// Put values into idb
+					dbPromise.then( db => {
+						var tx = db.transaction('restaurants', 'readwrite');
+						var restaurantStore = tx.objectStore('restaurants');
+				
+						restaurants.forEach( restaurant => {
+							restaurantStore.put(restaurant);
+							console.log('Restaurant added: ', restaurant);
+						});
+					});
+				} else {
+
+					// Oops!. Got an error from server.
+					const error = `Request failed. Returned status of ${xhr.status}`;
+					callback(error, null);
+				}
+			};
+			xhr.send();
+		});
 	}
 
 	/**
 			* Fetch a restaurant by its ID.
-			*/
+	*/
 	static fetchRestaurantById(id, callback) {
 		// fetch all restaurants with proper error handling.
 		DBHelper.fetchRestaurants((error, restaurants) => {
