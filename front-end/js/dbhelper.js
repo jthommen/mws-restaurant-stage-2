@@ -34,7 +34,7 @@ class DBHelper {
 				console.log('Restaurants: ', restaurants);
 				callback(null, restaurants);
 			}
-			
+
 			let xhr = new XMLHttpRequest();
 			xhr.open('GET', DBHelper.DATABASE_URL);
 			xhr.onload = () => {
@@ -53,7 +53,17 @@ class DBHelper {
 							restaurantStore.put(restaurant);
 							console.log('Restaurant added: ', restaurant);
 						});
+
+						// Ensure DB is not overloaded with entries
+						restaurantStore.openCursor(null, 'prev').then(cursor => {
+							return cursor.advance(15);
+						}).then( function deleteRest(cursor) {
+							if(!cursor) return;
+							cursor.delete();
+							return cursor.continue().then(deleteRest);	
+						});
 					});
+
 				} else {
 
 					// Oops!. Got an error from server.

@@ -55,6 +55,9 @@ gulp.task('lint', function() {
 gulp.task('service-worker', function() {
 	gulp.src('./service-worker.js')
 		.pipe(gulp.dest('./dist'));
+
+	gulp.src('./manifest.json')
+		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('copy-html', function() {
@@ -63,7 +66,7 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('copy-images', function() {
-	gulp.src('img/*')
+	gulp.src('img/**/*')
 		.pipe(imagemin({
 			progressive: true,
 			use: [pngquant()]
