@@ -1,3 +1,14 @@
+// Lazy load images
+window.addEventListener('load', function() {
+	let images = document.getElementsByTagName('img');
+
+	for(var i=0; i < images.length; i++) {
+		if (images[i].getAttribute('data-src')) {
+			images[i].setAttribute('src', images[i].getAttribute('data-src'));
+		}
+	}
+}, false);
+
 /**
  * 
 	* Common database helper functions.
@@ -51,7 +62,7 @@ class DBHelper {
 				
 						restaurants.forEach( restaurant => {
 							restaurantStore.put(restaurant);
-							console.log('Restaurant added: ', restaurant);
+							console.log(`Restaurant added: ${restaurant.name}`);
 						});
 
 						// Ensure DB is not overloaded with entries
