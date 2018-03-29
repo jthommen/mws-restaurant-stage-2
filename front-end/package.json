@@ -19,7 +19,8 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify-es": "^1.0.1",
-    "imagemin-pngquant": "^5.0.1"
+    "imagemin-pngquant": "^5.0.1",
+    "imagemin-webp": "^4.1.0"
   },
   "devDependencies": {
     "prettier-eslint": "^8.8.1"

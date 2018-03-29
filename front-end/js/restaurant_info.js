@@ -48,6 +48,7 @@ fetchRestaurantFromURL = (callback) => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
+
 fillRestaurantHTML = (restaurant = self.restaurant) => {
 	const name = document.getElementById('restaurant-name');
 	name.innerHTML = restaurant.name;
@@ -57,7 +58,16 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	const image = document.getElementById('restaurant-img');
 	image.className = 'restaurant-img';
 	image.setAttribute('alt', `Restaurant ${restaurant.name}`);
-	image.src = DBHelper.imageUrlForRestaurant(restaurant);
+
+	// Check if image exists
+	var regex = /undefined/;
+	if(!regex.test(DBHelper.imageUrlForRestaurant(restaurant))) {
+		image.src = DBHelper.imageUrlForRestaurant(restaurant);
+		console.log('Image defined!');
+	} else {
+		image.src = '/img/icons/icon-placeholder.png';
+		console.log('Image undefined!');
+	}
 
 	const cuisine = document.getElementById('restaurant-cuisine');
 	cuisine.innerHTML = restaurant.cuisine_type;
