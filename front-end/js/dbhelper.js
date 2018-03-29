@@ -40,9 +40,11 @@ class DBHelper {
 
 			return restaurantStore.getAll();
 		}).then( (restaurants) => {
+			let callbackSent;
 
 			if(restaurants.length > 0) {
 				console.log('Restaurants: ', restaurants);
+				callbackSent = true;
 				callback(null, restaurants);
 			}
 
@@ -53,8 +55,11 @@ class DBHelper {
 
 					// Got a success response from server!
 					const restaurants = JSON.parse(xhr.responseText);
-					callback(null, restaurants);
-					
+					if(!callbackSent)
+					{
+						callback(null, restaurants);
+					}
+
 					// Put values into idb
 					dbPromise.then( db => {
 						var tx = db.transaction('restaurants', 'readwrite');
